@@ -15,6 +15,7 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
+    id: again-scraper
 
 dockers:
   - image_templates:
@@ -31,6 +32,8 @@ dockers:
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.source={{.GitURL}}"
       - "--platform=linux/amd64"
+    ids:
+      - again-scraper
 
 archives:
   - format: tar.gz

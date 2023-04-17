@@ -18,25 +18,13 @@ builds:
 
 dockers:
   - image_templates:
-    - ghcr.io/nimdanitro/{{.ProjectName}}:v{{ .Version }}
-    - ghcr.io/nimdanitro/{{.ProjectName}}:v{{ .Major }}
-    - ghcr.io/nimdanitro/{{.ProjectName}}:v{{ .Major }}.{{ .Minor }}
-    - ghcr.io/nimdanitro/{{.ProjectName}}:latest
+    - ghcr.io/nimdanitro/{{.ProjectName}}/scraper:v{{ .Version }}
+    - ghcr.io/nimdanitro/{{.ProjectName}}/scraper:v{{ .Major }}
+    - ghcr.io/nimdanitro/{{.ProjectName}}/scraper:v{{ .Major }}.{{ .Minor }}
+    - ghcr.io/nimdanitro/{{.ProjectName}}/scraper:latest
 
 archives:
   - format: tar.gz
-    # this name template makes the OS and Arch compatible with the results of uname.
-    name_template: >-
-      {{ .ProjectName }}_
-      {{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-      {{- if .Arm }}v{{ .Arm }}{{ end }}
-    # use zip for windows archives
-    format_overrides:
-    - goos: windows
-      format: zip
 checksum:
   name_template: 'checksums.txt'
 snapshot:

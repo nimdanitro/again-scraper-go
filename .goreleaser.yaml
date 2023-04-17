@@ -1,7 +1,7 @@
 # This is an example .goreleaser.yml file with some sensible defaults.
 # Make sure to check the documentation at https://goreleaser.com
 
-project_name: again-scraper-go
+project_name: again-scraper
 
 before:
   hooks:
@@ -18,10 +18,10 @@ builds:
 
 dockers:
   - image_templates:
-    - ghcr.io/nimdanitro/{{.ProjectName}}/scraper:v{{ .Version }}
-    - ghcr.io/nimdanitro/{{.ProjectName}}/scraper:v{{ .Major }}
-    - ghcr.io/nimdanitro/{{.ProjectName}}/scraper:v{{ .Major }}.{{ .Minor }}
-    - ghcr.io/nimdanitro/{{.ProjectName}}/scraper:latest
+    - ghcr.io/nimdanitro/{{.ProjectName}}:v{{ .Version }}
+    - ghcr.io/nimdanitro/{{.ProjectName}}:v{{ .Major }}
+    - ghcr.io/nimdanitro/{{.ProjectName}}:v{{ .Major }}.{{ .Minor }}
+    - ghcr.io/nimdanitro/{{.ProjectName}}:latest
     use: buildx
     build_flag_templates:
       - "--pull"

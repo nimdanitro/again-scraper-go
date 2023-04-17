@@ -22,6 +22,15 @@ dockers:
     - ghcr.io/nimdanitro/{{.ProjectName}}/scraper:v{{ .Major }}
     - ghcr.io/nimdanitro/{{.ProjectName}}/scraper:v{{ .Major }}.{{ .Minor }}
     - ghcr.io/nimdanitro/{{.ProjectName}}/scraper:latest
+    use: buildx
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/amd64"
 
 archives:
   - format: tar.gz

@@ -1,3 +1,3 @@
 FROM scratch
-ENTRYPOINT ["/again-scraper"]
-COPY again-scraper /
+ENTRYPOINT ["/again-scraper-go"]
+COPY again-scraper-go /

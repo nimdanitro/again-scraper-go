@@ -17,10 +17,10 @@ builds:
 
 dockers:
   - image_templates:
-    - ghcr.io/nimdanitro/again-scraper-go:v{{ .Version }}
-    - ghcr.io/nimdanitro/again-scraper-go:v{{ .Major }}
-    - ghcr.io/nimdanitro/again-scraper-go:v{{ .Major }}.{{ .Minor }}
-    - ghcr.io/nimdanitro/again-scraper-go:latest
+    - ghcr.io/nimdanitro/{{ .ProjectName }}:v{{ .Version }}
+    - ghcr.io/nimdanitro/{{ .ProjectName }}:v{{ .Major }}
+    - ghcr.io/nimdanitro/{{ .ProjectName }}:v{{ .Major }}.{{ .Minor }}
+    - ghcr.io/nimdanitro/{{ .ProjectName }}:latest
     use: buildx
     build_flag_templates:
       - "--pull"

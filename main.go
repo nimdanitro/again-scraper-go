@@ -31,16 +31,15 @@ type indoorData struct {
 }
 
 var (
-	sensorIDs   []string
+	sensorIDs   map[string]string
 	temperature *prometheus.GaugeVec
 	humidity    *prometheus.GaugeVec
 )
 
-
 var (
-    version = "dev"
-    commit  = "none"
-    date    = "unknown"
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
 )
 
 func fetchData(ctx context.Context, log *zap.Logger, id string) (*indoorData, error) {
@@ -65,7 +64,7 @@ func fetchData(ctx context.Context, log *zap.Logger, id string) (*indoorData, er
 
 func main() {
 	// Parse command line flags
-	pflag.StringSliceVar(&sensorIDs, "sensors", []string{}, "Comma-separated list of sensor IDs")
+	pflag.StringToStringVarP(&sensorIDs, "sensors", "s", map[string]string{}, "Comma-separated list of sensor IDs, location mappings (ID12312=foobar,ID1321231=foobarbaz)")
 	pflag.Lookup("sensors").Value.Set(os.Getenv("SENSORS"))
 	pflag.Parse()
 
@@ -86,13 +85,13 @@ func main() {
 	temperature = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "indoor_temperature",
 		Help: "Indoor temperature in degrees Celsius",
-	}, []string{"sensor"})
+	}, []string{"sensor", "location"})
 	prometheus.MustRegister(temperature)
 
 	humidity = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "indoor_humidity",
 		Help: "Indoor relative humidity as a percentage",
-	}, []string{"sensor"})
+	}, []string{"sensor", "location"})
 	prometheus.MustRegister(humidity)
 
 	// Create HTTP server
@@ -123,31 +122,44 @@ func main() {
 	wg := &sync.WaitGroup{}
 
 	// Start goroutine to fetch data for each sensor
-	for _, sensorID := range sensorIDs {
+	for sensorID, location := range sensorIDs {
 		wg.Add(1)
 		go func(sensorID string) {
 			defer wg.Done()
 
-			logger.Info("starting fetching routine", zap.String("sensorId", sensorID))
+			logger.Info("starting fetching routine", zap.String("sensorId", sensorID), zap.String("location", location))
 			data, err := fetchData(ctx, logger, sensorID)
 			if err != nil {
-				logger.Error("Failed to fetch data", zap.Error(err), zap.String("sensorID", sensorID))
+				logger.Error("Failed to fetch data", zap.Error(err), zap.String("sensorID", sensorID), zap.String("location", location))
 			}
-			logger.Info("Fetched data", zap.Float64("temperature", data.Temperature), zap.Float64("humidity", data.Humidity), zap.String("sensorId", sensorID), zap.Time("timestamp", data.Timestamp))
-			temperature.WithLabelValues(sensorID).Set(data.Temperature)
-			humidity.WithLabelValues(sensorID).Set(data.Humidity)
+			logger.Info("Fetched data",
+				zap.Float64("temperature", data.Temperature),
+				zap.Float64("humidity", data.Humidity),
+				zap.String("sensorId", sensorID),
+				zap.String("location", location),
+				zap.Time("timestamp", data.Timestamp),
+			)
+
+			temperature.WithLabelValues(sensorID, location).Set(data.Temperature)
+			humidity.WithLabelValues(sensorID, location).Set(data.Humidity)
 
 			for {
 				select {
 				case <-ticker.C:
 					data, err := fetchData(ctx, logger, sensorID)
 					if err != nil {
-						logger.Error("Failed to fetch data", zap.Error(err), zap.String("sensorID", sensorID))
+						logger.Error("Failed to fetch data", zap.Error(err), zap.String("sensorID", sensorID), zap.String("location", location))
 						continue
 					}
-					logger.Info("Fetched data", zap.Float64("temperature", data.Temperature), zap.Float64("humidity", data.Humidity), zap.String("sensorId", sensorID), zap.Time("timestamp", data.Timestamp))
-					temperature.WithLabelValues(sensorID).Set(data.Temperature)
-					humidity.WithLabelValues(sensorID).Set(data.Humidity)
+					logger.Info("Fetched data",
+						zap.Float64("temperature", data.Temperature),
+						zap.Float64("humidity", data.Humidity),
+						zap.String("sensorId", sensorID),
+						zap.String("location", location),
+						zap.Time("timestamp", data.Timestamp),
+					)
+					temperature.WithLabelValues(sensorID, location).Set(data.Temperature)
+					humidity.WithLabelValues(sensorID, location).Set(data.Humidity)
 				case <-ctx.Done():
 					return
 				}

@@ -19,10 +19,10 @@ builds:
 
 dockers:
   - image_templates:
-    - ghcr.io/nimdanitro/{{.ProjectName}}:v{{ .Version }}
-    - ghcr.io/nimdanitro/{{.ProjectName}}:v{{ .Major }}
-    - ghcr.io/nimdanitro/{{.ProjectName}}:v{{ .Major }}.{{ .Minor }}
-    - ghcr.io/nimdanitro/{{.ProjectName}}:latest
+    - ghcr.io/nimdanitro/again-scraper-go/{{.ProjectName}}:v{{ .Version }}
+    - ghcr.io/nimdanitro/again-scraper-go/{{.ProjectName}}:v{{ .Major }}
+    - ghcr.io/nimdanitro/again-scraper-go/{{.ProjectName}}:v{{ .Major }}.{{ .Minor }}
+    - ghcr.io/nimdanitro/again-scraper-go/{{.ProjectName}}:latest
     use: buildx
     build_flag_templates:
       - "--pull"

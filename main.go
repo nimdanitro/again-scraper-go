@@ -36,6 +36,13 @@ var (
 	humidity    *prometheus.GaugeVec
 )
 
+
+var (
+    version = "dev"
+    commit  = "none"
+    date    = "unknown"
+)
+
 func fetchData(ctx context.Context, log *zap.Logger, id string) (*indoorData, error) {
 
 	log.Debug("fetching data for sensor", zap.String("sensorId", id))
@@ -73,6 +80,7 @@ func main() {
 		fmt.Println("Please specify a comma-separated list of sensor IDs with the --sensors flag")
 		return
 	}
+	logger.Info("starting up", zap.String("version", version), zap.String("commit", commit), zap.String("buildDate", date))
 
 	// Initialize metrics
 	temperature = prometheus.NewGaugeVec(prometheus.GaugeOpts{

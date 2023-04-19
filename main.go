@@ -122,9 +122,9 @@ func main() {
 	wg := &sync.WaitGroup{}
 
 	// Start goroutine to fetch data for each sensor
-	for sensorID, location := range sensorIDs {
+	for s, l := range sensorIDs {
 		wg.Add(1)
-		go func(sensorID string) {
+		go func(sensorID, location string) {
 			defer wg.Done()
 
 			logger.Info("starting fetching routine", zap.String("sensorId", sensorID), zap.String("location", location))
@@ -164,7 +164,7 @@ func main() {
 					return
 				}
 			}
-		}(sensorID)
+		}(s, l)
 	}
 
 	// Serve metrics endpoint

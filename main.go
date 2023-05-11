@@ -151,6 +151,7 @@ func main() {
 						logger.Error("Failed to fetch data", zap.Error(err), zap.String("sensorID", sensorID), zap.String("location", location))
 						continue
 					}
+
 					logger.Info("Fetched data",
 						zap.Float64("temperature", data.Temperature),
 						zap.Float64("humidity", data.Humidity),
@@ -158,6 +159,14 @@ func main() {
 						zap.String("location", location),
 						zap.Time("timestamp", data.Timestamp),
 					)
+
+					if data && data.Timestamp.IsZero() {
+						logger.Error("Bogus to data fetched with zero values, skipping update", 
+							zap.Error(err), zap.String("sensorID", sensorID), zap.String("location", location),
+						)
+						continue
+					}
+
 					temperature.WithLabelValues(sensorID, location).Set(data.Temperature)
 					humidity.WithLabelValues(sensorID, location).Set(data.Humidity)
 				case <-ctx.Done():
@@ -182,5 +191,4 @@ func main() {
 
 	// Wait for shutdown
 	wg.Wait()
-
 }

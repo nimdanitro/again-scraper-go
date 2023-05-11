@@ -160,7 +160,7 @@ func main() {
 						zap.Time("timestamp", data.Timestamp),
 					)
 
-					if data && data.Timestamp.IsZero() {
+					if data != nil && data.Timestamp.IsZero() {
 						logger.Error("Bogus to data fetched with zero values, skipping update", 
 							zap.Error(err), zap.String("sensorID", sensorID), zap.String("location", location),
 						)

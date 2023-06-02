@@ -12,26 +12,31 @@ builds:
   - env:
       - CGO_ENABLED=0
     goos:
-      - linux
-    id: again-scraper
+    - darwin
+    - linux
+    goarch:
+    - amd64
+    - arm64
+    - mips
+    - mips64
 
-dockers:
-  - image_templates:
-    - ghcr.io/nimdanitro/{{ .ProjectName }}:v{{ .Version }}
-    - ghcr.io/nimdanitro/{{ .ProjectName }}:v{{ .Major }}
-    - ghcr.io/nimdanitro/{{ .ProjectName }}:v{{ .Major }}.{{ .Minor }}
-    - ghcr.io/nimdanitro/{{ .ProjectName }}:latest
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/amd64"
-    ids:
-      - again-scraper
+kos:
+  - repository: ghcr.io/nimdanitro/again-scraper-go
+    tags:
+    - v{{ .Version }}
+    - v{{ .Major }}
+    - v{{ .Major }}.{{ .Minor }}
+    - latest
+    ko_data_creation_time: '{{.CommitTimestamp}}'
+    creation_time: '{{.CommitTimestamp}}'
+    bare: true
+    preserve_import_paths: false
+    platforms:
+    - linux/amd64
+    - linux/arm64
+    labels:
+      "org.opencontainers.image.name": "again-scraper-go"
+      "org.opencontainers.image.source": "https://github.com/nimdanitro/again-scraper-go"
 
 archives:
   - format: tar.gz

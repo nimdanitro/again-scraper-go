@@ -78,8 +78,8 @@ func main() {
 
 	lastReading, _ := meter.Float64Histogram(
 		"sensor.lastReading.duration",
-		metric.WithDescription("The duration since the last sensor reading."),
-		metric.WithUnit("s"),
+		metric.WithDescription("The duration since the last sensor reading in minutes"),
+		metric.WithUnit("min"),
 	)
 
 	// Get the sensor configurations
@@ -93,9 +93,6 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot create fetcher", zap.Error(err))
 	}
-
-	ticker := time.NewTicker(1 * time.Minute)
-	defer ticker.Stop()
 
 	readSensors := func() {
 		logger.Info("fetching data from egain")
@@ -117,19 +114,23 @@ func main() {
 				attribute.String("sensor.id", data.SensorID),
 				attribute.String("sensor.location", data.Location),
 			))
-			humidity.Record(ctx, data.Temperature, metric.WithAttributes(
+			humidity.Record(ctx, data.Humidity, metric.WithAttributes(
 				attribute.String("sensor.id", data.SensorID),
 				attribute.String("sensor.location", data.Location),
 			))
-			lastReading.Record(ctx, time.Since(data.Timestamp).Seconds(), metric.WithAttributes(
+			lastReading.Record(ctx, time.Since(data.Timestamp).Minutes(), metric.WithAttributes(
 				attribute.String("sensor.id", data.SensorID),
 				attribute.String("sensor.location", data.Location),
 			))
 		}
 	}
 
-	readSensors()
+	// Setup the timer to read the sensors
+	ticker := time.NewTicker(1 * time.Minute)
+	defer ticker.Stop()
 
+	// initial read of the sensors
+	readSensors()
 	for {
 		select {
 		case <-ticker.C:

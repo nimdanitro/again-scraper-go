@@ -1,6 +1,7 @@
 # This is an example .goreleaser.yml file with some sensible defaults.
 # Make sure to check the documentation at https://goreleaser.com
 
+version: 2
 before:
   hooks:
     # You may remove this if you don't use go modules.
@@ -38,12 +39,14 @@ kos:
       "org.opencontainers.image.name": "again-scraper-go"
       "org.opencontainers.image.source": "https://github.com/nimdanitro/again-scraper-go"
 
+docker_signs:
+  - artifacts: manifests
 archives:
   - format: tar.gz
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
 changelog:
   sort: asc
   filters:

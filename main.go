@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/nimdanitro/again-scraper-go/pkg/egain"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/pflag"
 	"go.opentelemetry.io/contrib/bridges/otelzap"
 	"go.opentelemetry.io/otel"
@@ -23,9 +22,7 @@ import (
 )
 
 var (
-	sensorIDs   map[string]string
-	temperature *prometheus.GaugeVec
-	humidity    *prometheus.GaugeVec
+	sensorIDs map[string]string
 )
 
 var (

@@ -42,6 +42,6 @@ require (
 	go.opentelemetry.io/otel/trace v1.43.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/sys v0.42.0 // indirect
-	golang.org/x/time v0.7.0
+	golang.org/x/time v0.15.0
 	google.golang.org/protobuf v1.36.11 // indirect
 )

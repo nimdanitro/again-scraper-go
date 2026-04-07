@@ -3,7 +3,7 @@ module github.com/nimdanitro/again-scraper-go
 go 1.25.0
 
 require (
-	github.com/spf13/pflag v1.0.5
+	github.com/spf13/pflag v1.0.10
 	go.opentelemetry.io/otel v1.43.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.31.0
 	go.opentelemetry.io/otel/log v0.19.0
